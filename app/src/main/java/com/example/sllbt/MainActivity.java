@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG_MAIN = "Main";
 
-    private Song chanson; // La chanson sélectionnée
-
     MediaPlayer mediaPlayer; // Le truc qui sert à jouer des médias
 
 
@@ -31,45 +30,57 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<Song> listeChansons = csvToList(R.raw.sllbt, ";"); // Le CSV sous forme de liste de listes
-        // On pourrait faire de la POO et créer une liste de "chansons"
-        chanson = listeChansons.get(1);
+
+        // Création des boutons
+        Button bPause = findViewById(R.id.buttonPause);
+        bPause.setOnClickListener(this::musicPause);
+
+        Button bPlay = findViewById(R.id.buttonPlay);
+        bPlay.setOnClickListener(this::musicPlay);
+
+        // Le CSV sous forme de liste de chansons
+        ArrayList<Song> listeChansons = csvToList(R.raw.sllbt, ";");
 
         mediaPlayer = new MediaPlayer();
         // On veut lire des fichiers audios
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+        // La chanson sélectionnée
+        Song chanson = listeChansons.get(2);
+
         try {
             mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
             mediaPlayer.prepare();
-            // mediaPlayer.start();
+            mediaPlayer.start();
+            mediaPlayer.pause();
+            Log.d(TAG_MAIN,"Lancement de la musique '" + chanson.title + "' située à l'adresse " + chanson.url);
 
         } catch (IOException e) {
-            Log.e(TAG_MAIN,"Impossible d'accéder à la chanson");
+            Log.e(TAG_MAIN,"Impossible d'accéder à la chanson'" + chanson.title + "' située à l'adresse " + chanson.url);
         }
-
     }
 
     // Lancement musique
-    public void musicplay(View v)
-    {
+    public void musicPlay(View v) {
         mediaPlayer.start();
-        Log.d(TAG_MAIN,"Lancement de la musique " + chanson.title + " située à l'adresse " + chanson.url);
+        Log.d(TAG_MAIN, "Start");
     }
 
     // Pause musique
-    public void musicpause(View v)
-    {
+    public void musicPause(View v) {
         mediaPlayer.pause();
         Log.d(TAG_MAIN,"Pause");
     }
 
+    /*
     // Fin musique
-    public void musicstop(View v)
+    public void musicStop(View v)
     {
         mediaPlayer.stop();
         Log.d(TAG_MAIN,"Stop");
     }
+
+     */
 
 
     // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chanson
