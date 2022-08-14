@@ -7,7 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,17 +33,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Le CSV sous forme de liste de chansons
+        ArrayList<Song> listeChansons = csvToList(R.raw.sllbt, ";");
 
         // Création des boutons
         Button bPause = findViewById(R.id.buttonPause);
         bPause.setOnClickListener(this::musicPause);
-
         Button bPlay = findViewById(R.id.buttonPlay);
         bPlay.setOnClickListener(this::musicPlay);
+        // Button bSubmit = findViewById(R.id.buttonSubmit);
+        // bPlay.setOnClickListener(this::verifResultat);
+        Log.d(TAG_MAIN,"Boutons créés");
 
-        // Le CSV sous forme de liste de chansons
-        ArrayList<Song> listeChansons = csvToList(R.raw.sllbt, ";");
+        // Création du formulaire de réponse
+        String[] listeTitres = new String[listeChansons.size()];
+        for (int i = 0; i < listeChansons.size(); i++) { // Création d'une liste de titres
+            listeTitres[i] = listeChansons.get(i).title;
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, listeTitres);
+        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
+        textView.setAdapter(adapter);
+        Log.d(TAG_MAIN,"Zone de texte créée");
 
+        TextView tTitre = (TextView) findViewById(R.id.texteTitre);
+        tTitre.setText("Titre");
+        TextView tResultat = (TextView) findViewById(R.id.texteResultat);
+        tResultat.setText("Résultat");
+        Log.d(TAG_MAIN,"TextView créées");
+
+        // Création du lecteur de médias
         mediaPlayer = new MediaPlayer();
         // On veut lire des fichiers audios
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -53,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayer.prepare();
             mediaPlayer.start();
             mediaPlayer.pause();
-            Log.d(TAG_MAIN,"Lancement de la musique '" + chanson.title + "' située à l'adresse " + chanson.url);
+            Log.d(TAG_MAIN,"Lancement de la chanson '" + chanson.title + "' située à l'adresse " + chanson.url);
+            // TODO : Déplacer ça vers musicPlay
 
         } catch (IOException e) {
             Log.e(TAG_MAIN,"Impossible d'accéder à la chanson'" + chanson.title + "' située à l'adresse " + chanson.url);
@@ -82,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
      */
 
-
-    // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chanson
+    // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chansons
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public ArrayList<Song> csvToList(int path, String delimiteur) {
         try {
@@ -92,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] b = new byte[in_s.available()];
             in_s.read(b);
             String chaine = new String(b);
+            // Cette chaine contient la totalité du document texte
 
             ArrayList<Song> liste = new ArrayList<>();
             String[] t_lignes = chaine.split("\n");
@@ -106,4 +128,11 @@ public class MainActivity extends AppCompatActivity {
                 return (null);
             }
         }
+/*
+    private void verifResultat() {
+
+    }
+
+ */
+
     }
