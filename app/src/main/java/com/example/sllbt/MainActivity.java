@@ -1,6 +1,7 @@
 package com.example.sllbt;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         tTitre = (TextView) findViewById(R.id.texteTitre);
         tResultat = (TextView) findViewById(R.id.texteResultat);
-
         Log.d(TAG_MAIN,"TextView créées");
 
         // Création du lecteur de médias
