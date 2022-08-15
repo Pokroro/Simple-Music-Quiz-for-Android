@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             temp = genAleatoire(listeChansons.size()-1);
         }
         chanson = listeChansons.get(temp);
-
+//TODO : gérer les différents états possibles du lecteur
     }
 
 
