@@ -22,9 +22,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG_MAIN = "Main";
+    private Song chanson;
+    private AutoCompleteTextView textViewReponse;
+    private TextView tTitre;
+    private TextView tResultat;
 
     MediaPlayer mediaPlayer; // Le truc qui sert à jouer des médias
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -41,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         bPause.setOnClickListener(this::musicPause);
         Button bPlay = findViewById(R.id.buttonPlay);
         bPlay.setOnClickListener(this::musicPlay);
-        // Button bSubmit = findViewById(R.id.buttonSubmit);
-        // bPlay.setOnClickListener(this::verifResultat);
+        Button bSubmit = findViewById(R.id.buttonSubmit);
+        bSubmit.setOnClickListener(this::verifResultat);
         Log.d(TAG_MAIN,"Boutons créés");
 
         // Création du formulaire de réponse
@@ -51,14 +54,13 @@ public class MainActivity extends AppCompatActivity {
             listeTitres[i] = listeChansons.get(i).title;
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, listeTitres);
-        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
-        textView.setAdapter(adapter);
+        textViewReponse = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
+        textViewReponse.setAdapter(adapter);
         Log.d(TAG_MAIN,"Zone de texte créée");
 
-        TextView tTitre = (TextView) findViewById(R.id.texteTitre);
-        tTitre.setText("Titre");
-        TextView tResultat = (TextView) findViewById(R.id.texteResultat);
-        tResultat.setText("Résultat");
+        tTitre = (TextView) findViewById(R.id.texteTitre);
+        tResultat = (TextView) findViewById(R.id.texteResultat);
+
         Log.d(TAG_MAIN,"TextView créées");
 
         // Création du lecteur de médias
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         // La chanson sélectionnée
-        Song chanson = listeChansons.get(2);
+        chanson = listeChansons.get(4);
 
         try {
             mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
@@ -128,11 +130,19 @@ public class MainActivity extends AppCompatActivity {
                 return (null);
             }
         }
-/*
-    private void verifResultat() {
+
+    private void verifResultat(View v) {
+        String reponse = textViewReponse.getText().toString();
+        tTitre.setText(getString(R.string.display_result,chanson.title));
+        if (reponse.equalsIgnoreCase(chanson.title)) {
+            tResultat.setText(getString(R.string.bravo));
+        } else {
+            tResultat.setText(getString(R.string.perdu));
+        }
 
     }
 
- */
+
+
 
     }
