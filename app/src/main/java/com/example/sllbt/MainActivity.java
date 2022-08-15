@@ -18,14 +18,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG_MAIN = "Main";
-    private Song chanson;
+
+    private ArrayList<Song> listeChansons;
+    private Song chanson; // La chanson sélectionnée à un moment donné
     private AutoCompleteTextView textViewReponse;
     private TextView tTitre;
     private TextView tResultat;
+
 
     MediaPlayer mediaPlayer; // Le truc qui sert à jouer des médias
 
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Le CSV sous forme de liste de chansons
-        ArrayList<Song> listeChansons = csvToList(R.raw.sllbt, ";");
+        listeChansons = csvToList(R.raw.sllbt, ";");
 
         // Création des boutons
         Button bPause = findViewById(R.id.buttonPause);
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         bPlay.setOnClickListener(this::musicPlay);
         Button bSubmit = findViewById(R.id.buttonSubmit);
         bSubmit.setOnClickListener(this::verifResultat);
+        Button bChange = findViewById(R.id.buttonChange);
+        bChange.setOnClickListener(this::changeSong);
         Log.d(TAG_MAIN,"Boutons créés");
 
         // Création du formulaire de réponse
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         // La chanson sélectionnée
-        chanson = listeChansons.get(4);
+        chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
 
         try {
             mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
@@ -119,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Song> liste = new ArrayList<>();
             String[] t_lignes = chaine.split("\n");
-            for (String s_ligne : t_lignes) {
-                String[] t_ligne = s_ligne.split(delimiteur);
-                liste.add(new Song(t_ligne[0], t_ligne[1]));
+            for (int i = 0; i < t_lignes.length; i++) {
+                String[] t_ligne = t_lignes[i].split(delimiteur);
+                liste.add(new Song(t_ligne[0], t_ligne[1], i));
 
             } return liste;
 
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    // Met à jour l'UI selon que l'utilisateur gagne ou perde
     private void verifResultat(View v) {
         String reponse = textViewReponse.getText().toString();
         tTitre.setText(getString(R.string.display_result,chanson.title));
@@ -139,6 +146,19 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tResultat.setText(getString(R.string.perdu));
         }
+
+    }
+    // Génère un entier aléatoire compris entre 0 et max
+    private int genAleatoire(int max) {
+        return new Random().nextInt(max + 1);
+    }
+
+    private void changeSong(View v) {
+        int temp = genAleatoire(listeChansons.size()-1);
+        while (temp == chanson.indice) {
+            temp = genAleatoire(listeChansons.size()-1);
+        }
+        chanson = listeChansons.get(temp);
 
     }
 
