@@ -4,5 +4,10 @@
     <string name="pause">Pause</string>
     <string name="play">Play</string>
     <string name="soumettre">Soumettre</string>
-    <string name="votre_r_ponse">Votre réponse</string>
+    <string name="votre_reponse">Votre réponse</string>
+    <string name="display_result">Le titre était : %1$s</string>
+    <string name="bravo">Bravo !</string>
+    <string name="perdu">Perdu !</string>
+    <string name="changer">Changer</string>
+
 </resources>
