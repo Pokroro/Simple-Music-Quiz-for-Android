@@ -1,7 +1,6 @@
 package com.example.sllbt;
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Song> listeChansons;
     private Song chanson; // La chanson sélectionnée à un moment donné
-    private AutoCompleteTextView textViewReponse;
+    private AutoCompleteTextView twReponse;
     private TextView tTitre;
     private TextView tResultat;
 
@@ -61,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
             listeTitres[i] = listeChansons.get(i).title;
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, listeTitres);
-        textViewReponse = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
-        textViewReponse.setAdapter(adapter);
+        twReponse = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
+        twReponse.setAdapter(adapter);
         Log.d(TAG_MAIN,"Zone de texte créée");
 
         tTitre = (TextView) findViewById(R.id.texteTitre);
@@ -77,17 +76,7 @@ public class MainActivity extends AppCompatActivity {
         // La chanson sélectionnée
         chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
 
-        try {
-            mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            mediaPlayer.pause();
-            Log.d(TAG_MAIN,"Lancement de la chanson '" + chanson.title + "' située à l'adresse " + chanson.url);
-            // TODO : Déplacer ça vers musicPlay
-
-        } catch (IOException e) {
-            Log.e(TAG_MAIN,"Impossible d'accéder à la chanson'" + chanson.title + "' située à l'adresse " + chanson.url);
-        }
+        insertSong();
     }
 
     // Lancement musique
@@ -102,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_MAIN,"Pause");
     }
 
-    /*
+/*
     // Fin musique
     public void musicStop(View v)
     {
@@ -110,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_MAIN,"Stop");
     }
 
-     */
+ */
 
     // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chansons
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -139,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Met à jour l'UI selon que l'utilisateur gagne ou perde
     private void verifResultat(View v) {
-        String reponse = textViewReponse.getText().toString();
+        String reponse = twReponse.getText().toString();
         tTitre.setText(getString(R.string.display_result,chanson.title));
         if (reponse.equalsIgnoreCase(chanson.title)) {
             tResultat.setText(getString(R.string.bravo));
@@ -153,13 +142,33 @@ public class MainActivity extends AppCompatActivity {
         return new Random().nextInt(max + 1);
     }
 
+    // "Insère" une chanson dans le lecteur
+    private void insertSong() {
+        try {
+            mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            mediaPlayer.pause();
+            Log.d(TAG_MAIN,"Chargement de la chanson '" + chanson.title + "' située à l'adresse " + chanson.url);
+
+        } catch (IOException e) {
+            Log.e(TAG_MAIN,"Impossible d'accéder à la chanson'" + chanson.title + "' située à l'adresse " + chanson.url);
+        }
+    }
+
+    // Change la chanson "insérée" dans le lecteur
     private void changeSong(View v) {
+        twReponse.setText("");
+        tTitre.setText("");
+        tResultat.setText("");
+        mediaPlayer.reset();
         int temp = genAleatoire(listeChansons.size()-1);
         while (temp == chanson.indice) {
             temp = genAleatoire(listeChansons.size()-1);
         }
         chanson = listeChansons.get(temp);
-//TODO : gérer les différents états possibles du lecteur
+        Log.d(TAG_MAIN,"Changement de chanson");
+        insertSong();
     }
 
 
