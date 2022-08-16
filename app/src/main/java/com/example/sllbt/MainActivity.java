@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,7 +24,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String TAG_MAIN = "Main";
+    private final static String TAG_MAIN = "debug_main";
 
     private ArrayList<Song> listeChansons;
     private Song chanson; // La chanson sélectionnée à un moment donné
@@ -128,15 +130,22 @@ public class MainActivity extends AppCompatActivity {
 
     // Met à jour l'UI selon que l'utilisateur gagne ou perde
     private void verifResultat(View v) {
+        fermerClavier();
         String reponse = twReponse.getText().toString();
-        tTitre.setText(getString(R.string.display_result,chanson.title));
+        tTitre.setText(getString(R.string.display_result, chanson.title));
         if (reponse.equalsIgnoreCase(chanson.title)) {
             tResultat.setText(getString(R.string.bravo));
         } else {
             tResultat.setText(getString(R.string.perdu));
         }
-
     }
+
+    // Ferme le clavier s'il est ouvert
+    private void fermerClavier() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+
     // Génère un entier aléatoire compris entre 0 et max
     private int genAleatoire(int max) {
         return new Random().nextInt(max + 1);
@@ -147,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             mediaPlayer.setDataSource(chanson.url); // Fourniture de l'adresse de la chanson à jouer au lecteur
             mediaPlayer.prepare();
-            mediaPlayer.start();
-            mediaPlayer.pause();
             Log.d(TAG_MAIN,"Chargement de la chanson '" + chanson.title + "' située à l'adresse " + chanson.url);
 
         } catch (IOException e) {
