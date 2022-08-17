@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Le CSV sous forme de liste de chansons
-        listeChansons = csvToList(R.raw.sllbt, ";");
+        listeChansons = csvToList(R.raw.songs, ";");
 
         // Création des boutons
         Button bPause = findViewById(R.id.buttonPause);
@@ -62,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
             listeTitres[i] = listeChansons.get(i).title;
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, listeTitres);
-        twReponse = (AutoCompleteTextView) findViewById(R.id.autocompleteReponse);
+        twReponse = findViewById(R.id.autocompleteReponse);
         twReponse.setAdapter(adapter);
         Log.d(TAG_MAIN,"Zone de texte créée");
 
-        tTitre = (TextView) findViewById(R.id.texteTitre);
-        tResultat = (TextView) findViewById(R.id.texteResultat);
+        tTitre = findViewById(R.id.texteTitre);
+        tResultat = findViewById(R.id.texteResultat);
         Log.d(TAG_MAIN,"TextView créées");
 
         // Création du lecteur de médias
