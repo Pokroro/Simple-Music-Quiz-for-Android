@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SLLBT</string>
+    <string name="app_name">Music Quiz</string>
     <string name="desc_image">desc_image</string>
     <string name="pause">Pause</string>
     <string name="play">Play</string>
@@ -9,5 +9,6 @@
     <string name="bravo">Bravo !</string>
     <string name="perdu">Perdu !</string>
     <string name="changer">Changer</string>
+    <string name="start">START</string>
 
 </resources>

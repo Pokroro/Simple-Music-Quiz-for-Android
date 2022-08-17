@@ -36,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    protected void onCreate(
-            Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -73,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer = new MediaPlayer();
         // On veut lire des fichiers audios
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        Log.d(TAG_MAIN,"Lecteur audio créé");
 
-        // La chanson sélectionnée
+        // La première chanson sélectionnée
         chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
 
         insertSong();
