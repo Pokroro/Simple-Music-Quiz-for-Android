@@ -10,8 +10,6 @@
     <string name="perdu">Perdu !</string>
     <string name="changer">Changer</string>
     <string name="start">START</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ajouter_une_chanson">Ajouter une chanson</string>
     <string name="titre">Titre</string>
     <string name="url">URL</string>

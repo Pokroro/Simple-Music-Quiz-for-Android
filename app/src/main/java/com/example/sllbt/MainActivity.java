@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] b = new byte[in_s.available()];
             in_s.read(b);
             String chaine = new String(b);
+            in_s.close();
             // Cette chaine contient la totalité du document texte
 
             ArrayList<Song> liste = new ArrayList<>();

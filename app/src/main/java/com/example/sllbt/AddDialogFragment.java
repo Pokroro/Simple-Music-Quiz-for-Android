@@ -70,7 +70,7 @@ class CustomDialog extends Dialog {
             this.dismiss();
         }
 
-        // Envoie les informations entrées à HomeActivity
+        // Envoie les informations entrées vers HomeActivity
         dialogListener.songEntered(s_titre, s_URL);
 
     }
