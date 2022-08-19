@@ -177,7 +177,4 @@ public class MainActivity extends AppCompatActivity {
         insertSong();
     }
 
-
-
-
-    }
+}

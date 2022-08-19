@@ -1,69 +1,85 @@
 package com.example.sllbt;
 
-
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
+class CustomDialog extends Dialog {
 
-public class AddDialogFragment extends DialogFragment {
+    private final static String TAG_CS = "debug_custom_dialog";
 
-    public static final String ARG_TITLE = "YesNoDialog.Title";
-    public static final String ARG_MESSAGE = "YesNoDialog.Message";
+    private EditText etTitre;
+    private EditText etURL;
 
-    private AddDialogFragmentListener listener;
-
-    public interface AddDialogFragmentListener {
-        /**
-         *
-         * @param resultCode - Activity.RESULT_OK, Activity.RESULT_CANCEL
-         */
-        void onYesNoResultDialog(int resultCode, @Nullable Intent data);
+    interface DialogTitleListener {
+        void titleEntered(String ds_title);
     }
 
-    public void setOnYesNoDialogFragmentListener(AddDialogFragmentListener listener) {
-        this.listener = listener;
+    interface DialogURLListener {
+        void urlEntered(String ds_url);
     }
 
-    @NonNull
+    public Context context;
+
+    private final CustomDialog.DialogTitleListener dialogTitleListener;
+    private final CustomDialog.DialogURLListener dialogURLListener;
+
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        assert args != null;
-        String title = args.getString(ARG_TITLE);
-        String message = args.getString(ARG_MESSAGE);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.fragment_dialog);
+        Log.d(TAG_CS,"dialogue créé");
 
-        return new AlertDialog.Builder(requireActivity())
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Yes", (dialog, which) -> buttonOkClick())
-                .setNegativeButton("No", (dialog, which) -> buttonNoClick())
-                .create();
-    }
-
-    private void buttonOkClick() {
-
-        Bundle bundle = new Bundle();
-        bundle.putString("key1", "Value 1");
-        bundle.putString("key2", "Value 2");
-        Intent data  = new Intent().putExtras(bundle);
-
-        this.listener.onYesNoResultDialog(Activity.RESULT_OK, data);
+        etTitre = findViewById(R.id.editTextTitre);
+        etURL = findViewById(R.id.editTextURL);
+        Button bAnnuler  = findViewById(R.id.button_cancel);
+        bAnnuler.setOnClickListener(this::bAnnulerClick);
+        Button bOK = findViewById(R.id.button_ok);
+        bOK.setOnClickListener(this::bOKClick);
 
     }
 
-    private void buttonNoClick() {
-        int resultCode = Activity.RESULT_CANCELED;
-        Intent data  = null;
-
-        this.listener.onYesNoResultDialog(resultCode, data);
-
+    // Constructeur
+    public CustomDialog(Context context,
+                        CustomDialog.DialogTitleListener dialogTitleListener,
+                        CustomDialog.DialogURLListener dialogURLListener) {
+        super(context);
+        this.context = context;
+        this.dialogTitleListener = dialogTitleListener;
+        this.dialogURLListener = dialogURLListener;
 
     }
 
+    // Ferme le dialogue
+    private void bAnnulerClick(View v)  {
+        this.dismiss();
+    }
+
+    // WIP
+    private void bOKClick(View v) {
+        String s_titre = etTitre.getText().toString();
+        String s_URL = etURL.getText().toString();
+
+        if(s_titre.isEmpty())  {
+            Toast.makeText(this.context, "Veuillez entrer qqc", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            Log.d(TAG_CS, "Ajout de la chanson '" + s_titre + "' située à l'adresse " + s_URL);
+            // TODO : Effectivement ajouter la chanson à la liste
+            this.dismiss();
+        }
+
+        // Envoie les informations entrées à HomeActivity
+        dialogTitleListener.titleEntered(s_titre);
+        dialogURLListener.urlEntered(s_URL);
+
+    }
 }

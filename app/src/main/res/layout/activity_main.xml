@@ -26,9 +26,7 @@
         android:id="@+id/autocompleteReponse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/votre_reponse"
-
-        />
+        android:hint="@string/votre_reponse"/>
 
     <Button
         android:id="@+id/buttonSubmit"
