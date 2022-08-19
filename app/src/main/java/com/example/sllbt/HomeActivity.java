@@ -15,8 +15,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private final static String TAG_HOME = "debug_home";
 
-    private TextView tAddTitre;
-    private TextView tAddURL;
+    private TextView tAddSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +25,7 @@ public class HomeActivity extends AppCompatActivity {
         Button bLaunch = findViewById(R.id.buttonLaunch);
         bLaunch.setOnClickListener(this::gameLaunch);
 
-        tAddTitre = findViewById(R.id.texteAddTitre);
-        tAddURL = findViewById(R.id.texteAddURL);
+        tAddSong = findViewById(R.id.texteAddSongHome);
 
         FloatingActionButton fabOpenDialog = findViewById(R.id.floatingActionButton);
         fabOpenDialog.setOnClickListener(this::openDialog);
@@ -42,10 +40,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void openDialog(View v) {
-        CustomDialog.DialogTitleListener dialogTitleListener = ds_title -> tAddTitre.setText(getString(R.string.add_title, ds_title));
-        CustomDialog.DialogURLListener dialogURLListener = ds_url -> tAddURL.setText(getString(R.string.add_url, ds_url));
-
-        final CustomDialog dialog = new CustomDialog(this, dialogTitleListener, dialogURLListener);
+        CustomDialog.DialogListener dialogListener = (ds_titre, ds_URL) -> tAddSong.setText(getString(R.string.add_song_home, ds_titre, ds_URL));
+        final CustomDialog dialog = new CustomDialog(this, dialogListener);
 
         dialog.show();
     }

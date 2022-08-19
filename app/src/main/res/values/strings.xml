@@ -17,7 +17,9 @@
     <string name="url">URL</string>
     <string name="annuler">Annuler</string>
     <string name="ok">OK</string>
-    <string name="add_title">Ajoutée à la liste : \nTitre : %1$s</string>
-    <string name="add_url">URL : %1$s</string>
+    <string name="add_song_home">Chanson ajoutée à la liste :\n
+        Titre : %1$s\n
+        URL : %2$s
+    </string>
 
 </resources>

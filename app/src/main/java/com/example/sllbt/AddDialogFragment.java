@@ -17,18 +17,13 @@ class CustomDialog extends Dialog {
     private EditText etTitre;
     private EditText etURL;
 
-    interface DialogTitleListener {
-        void titleEntered(String ds_title);
-    }
-
-    interface DialogURLListener {
-        void urlEntered(String ds_url);
+    interface DialogListener {
+        void songEntered(String titre, String url);
     }
 
     public Context context;
 
-    private final CustomDialog.DialogTitleListener dialogTitleListener;
-    private final CustomDialog.DialogURLListener dialogURLListener;
+    private final CustomDialog.DialogListener dialogListener;
 
 
     @Override
@@ -49,12 +44,10 @@ class CustomDialog extends Dialog {
 
     // Constructeur
     public CustomDialog(Context context,
-                        CustomDialog.DialogTitleListener dialogTitleListener,
-                        CustomDialog.DialogURLListener dialogURLListener) {
+                        CustomDialog.DialogListener dialogTitleListener) {
         super(context);
         this.context = context;
-        this.dialogTitleListener = dialogTitleListener;
-        this.dialogURLListener = dialogURLListener;
+        this.dialogListener = dialogTitleListener;
 
     }
 
@@ -78,8 +71,7 @@ class CustomDialog extends Dialog {
         }
 
         // Envoie les informations entrées à HomeActivity
-        dialogTitleListener.titleEntered(s_titre);
-        dialogURLListener.urlEntered(s_URL);
+        dialogListener.songEntered(s_titre, s_URL);
 
     }
 }
