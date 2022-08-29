@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Song> listeChansons;
     private Song chanson; // La chanson sélectionnée à un moment donné
+    private Button bPlay;
     private AutoCompleteTextView twReponse;
     private TextView tTitre;
     private TextView tResultat;
-
 
     MediaPlayer mediaPlayer; // Le truc qui sert à jouer des médias
 
@@ -45,14 +46,13 @@ public class MainActivity extends AppCompatActivity {
         listeChansons = csvToList(R.raw.songs, ";");
 
         // Création des boutons
-        Button bPause = findViewById(R.id.buttonPause);
-        bPause.setOnClickListener(this::musicPause);
-        Button bPlay = findViewById(R.id.buttonPlay);
-        bPlay.setOnClickListener(this::musicPlay);
+        bPlay = findViewById(R.id.buttonPlay);
+        bPlay.setTag(0);
+        bPlay.setText(getString(R.string.commencer));
+        bPlay.setOnClickListener(this::playGame);
+
         Button bSubmit = findViewById(R.id.buttonSubmit);
         bSubmit.setOnClickListener(this::verifResultat);
-        Button bChange = findViewById(R.id.buttonChange);
-        bChange.setOnClickListener(this::changeSong);
         Log.d(TAG_MAIN,"Boutons créés");
 
         // Création du formulaire de réponse
@@ -69,21 +69,33 @@ public class MainActivity extends AppCompatActivity {
         tResultat = findViewById(R.id.texteResultat);
         Log.d(TAG_MAIN,"TextView créées");
 
-        // Création du lecteur de médias
-        mediaPlayer = new MediaPlayer();
-        // On veut lire des fichiers audios
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    }
 
-        // La chanson sélectionnée
-        chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
-
+    private void playGame(View v) {
+        if((Integer)v.getTag() == 0) {
+            Log.d(TAG_MAIN,"Lancement du jeu !");
+            // Création du lecteur de médias
+            mediaPlayer = new MediaPlayer();
+            // On veut lire des fichiers audios
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            // La chanson sélectionnée
+            chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
+            v.setTag(1);
+            bPlay.setText(getString(R.string.changer));
+        } else {
+            changeSong();
+        }
         insertSong();
+        musicPlay(v);
+        Handler handler = new Handler();
+        handler.postDelayed(() -> musicPause(v), 2000);
+
     }
 
     // Lancement musique
     public void musicPlay(View v) {
         mediaPlayer.start();
-        Log.d(TAG_MAIN, "Start");
+        Log.d(TAG_MAIN, "Play");
     }
 
     // Pause musique
@@ -94,13 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
 /*
     // Fin musique
-    public void musicStop(View v)
-    {
+    public void musicStop(View v) {
         mediaPlayer.stop();
         Log.d(TAG_MAIN,"Stop");
     }
 
- */
+     */
+
 
     // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chansons
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -163,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Change la chanson "insérée" dans le lecteur
-    private void changeSong(View v) {
+    private void changeSong() {
         twReponse.setText("");
         tTitre.setText("");
         tResultat.setText("");
@@ -174,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         }
         chanson = listeChansons.get(temp);
         Log.d(TAG_MAIN,"Changement de chanson");
-        insertSong();
     }
 
 

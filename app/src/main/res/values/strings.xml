@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SLLBT</string>
     <string name="desc_image">desc_image</string>
+    <string name="commencer">Commencer</string>
+    <string name="changer">Changer</string>
     <string name="pause">Pause</string>
     <string name="play">Play</string>
     <string name="soumettre">Soumettre</string>
@@ -8,6 +10,5 @@
     <string name="display_result">Le titre était : %1$s</string>
     <string name="bravo">Bravo !</string>
     <string name="perdu">Perdu !</string>
-    <string name="changer">Changer</string>
 
 </resources>

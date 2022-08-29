@@ -9,26 +9,16 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/buttonPause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pause"
-        android:layout_gravity="center" />
-
-    <Button
         android:id="@+id/buttonPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/play"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
     <AutoCompleteTextView
         android:id="@+id/autocompleteReponse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/votre_reponse"
-
-        />
+        android:hint="@string/votre_reponse" />
 
     <Button
         android:id="@+id/buttonSubmit"
@@ -46,12 +36,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
-
-    <Button
-        android:id="@+id/buttonChange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/changer"
-        android:layout_gravity="center" />
 
 </LinearLayout>
