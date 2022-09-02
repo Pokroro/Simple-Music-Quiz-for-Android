@@ -131,18 +131,25 @@ public class MainActivity extends AppCompatActivity {
     private void verifResultat(View v) {
         fermerClavier();
         String reponse = twReponse.getText().toString();
+        Log.d(TAG_MAIN,"Réponse entrée : '" + reponse + "'");
         tTitre.setText(getString(R.string.display_result, chanson.title));
         if (reponse.equalsIgnoreCase(chanson.title)) {
+            Log.d(TAG_MAIN,"Victoire !");
             tResultat.setText(getString(R.string.bravo));
         } else {
+            Log.d(TAG_MAIN,"Echec.");
             tResultat.setText(getString(R.string.perdu));
         }
     }
 
     // Ferme le clavier s'il est ouvert
     private void fermerClavier() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            Log.d(TAG_MAIN,"Erreur dans fermerClavier()");
+        }
     }
 
     // Génère un entier aléatoire compris entre 0 et max
