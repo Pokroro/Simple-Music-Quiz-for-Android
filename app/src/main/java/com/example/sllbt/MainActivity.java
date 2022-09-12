@@ -3,7 +3,6 @@ package com.example.sllbt;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,8 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
@@ -26,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG_MAIN = "debug_main";
 
+    private final static int DELAI = 2000;
+
     private ArrayList<Song> listeChansons;
     private Song chanson; // La chanson sélectionnée à un moment donné
     private Button bPlay;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     MediaPlayer mediaPlayer; // Le truc qui sert à jouer des médias
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(
             Bundle savedInstanceState) {
@@ -50,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
         bPlay.setTag(0);
         bPlay.setText(getString(R.string.commencer));
         bPlay.setOnClickListener(this::playGame);
-
         Button bSubmit = findViewById(R.id.buttonSubmit);
         bSubmit.setOnClickListener(this::verifResultat);
+        Button bChange = findViewById(R.id.buttonChange);
+        bChange.setOnClickListener(this::changeSong);
         Log.d(TAG_MAIN,"Boutons créés");
 
         // Création du formulaire de réponse
@@ -69,27 +71,29 @@ public class MainActivity extends AppCompatActivity {
         tResultat = findViewById(R.id.texteResultat);
         Log.d(TAG_MAIN,"TextView créées");
 
+        // Création du lecteur de médias
+        mediaPlayer = new MediaPlayer();
+        // On veut lire des fichiers audios
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        Log.d(TAG_MAIN, "MediaPlayer configuré");
+        // La chanson sélectionnée
+        chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
+        insertSong();
+
+    }
+    
+    // Fonction du bouton principal
+    private void playGame(View v) {
+        mediaPlayer.seekTo(0);
+        bPlay.setText(getString(R.string.reecouter));
+        musicPlayDelay(v, 2000);
     }
 
-    private void playGame(View v) {
-        if((Integer)v.getTag() == 0) {
-            Log.d(TAG_MAIN,"Lancement du jeu !");
-            // Création du lecteur de médias
-            mediaPlayer = new MediaPlayer();
-            // On veut lire des fichiers audios
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            // La chanson sélectionnée
-            chanson = listeChansons.get(genAleatoire(listeChansons.size()-1));
-            v.setTag(1);
-            bPlay.setText(getString(R.string.changer));
-        } else {
-            changeSong();
-        }
-        insertSong();
+    // Joue une musique pendant delai secondes
+    public void musicPlayDelay(View v, int delai) {
         musicPlay(v);
         Handler handler = new Handler();
-        handler.postDelayed(() -> musicPause(v), 2000);
-
+        handler.postDelayed(() -> musicPause(v), delai);
     }
 
     // Lancement musique
@@ -104,15 +108,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG_MAIN,"Pause");
     }
 
-/*
+
     // Fin musique
     public void musicStop(View v) {
         mediaPlayer.stop();
         Log.d(TAG_MAIN,"Stop");
     }
-
-     */
-
 
     // Prend un CSV de chansons à l'adresse path, renvoie une ArrayList de chansons
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -144,14 +145,20 @@ public class MainActivity extends AppCompatActivity {
         fermerClavier();
         String reponse = twReponse.getText().toString();
         Log.d(TAG_MAIN,"Réponse entrée : '" + reponse + "'");
-        tTitre.setText(getString(R.string.display_result, chanson.title));
-        if (reponse.equalsIgnoreCase(chanson.title)) {
-            Log.d(TAG_MAIN,"Victoire !");
-            tResultat.setText(getString(R.string.bravo));
+        if (!reponse.equals("")) {
+            tTitre.setText(getString(R.string.display_result, chanson.title));
+            if (reponse.equalsIgnoreCase(chanson.title)) {
+                Log.d(TAG_MAIN, "Victoire !");
+                tResultat.setText(getString(R.string.bravo));
+                musicPlay(v);
+            } else {
+                Log.d(TAG_MAIN, "Echec.");
+                tResultat.setText(getString(R.string.perdu));
+            }
         } else {
-            Log.d(TAG_MAIN,"Echec.");
-            tResultat.setText(getString(R.string.perdu));
+            Toast.makeText(this, "Veuillez entrer une réponse", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // Ferme le clavier s'il est ouvert
@@ -182,7 +189,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Change la chanson "insérée" dans le lecteur
-    private void changeSong() {
+    private void changeSong(View v) {
+        musicStop(v);
+        bPlay.setText(getString(R.string.reecouter));
         twReponse.setText("");
         tTitre.setText("");
         tResultat.setText("");
@@ -192,10 +201,9 @@ public class MainActivity extends AppCompatActivity {
             temp = genAleatoire(listeChansons.size()-1);
         }
         chanson = listeChansons.get(temp);
+        insertSong();
         Log.d(TAG_MAIN,"Changement de chanson");
+        musicPlayDelay(v, DELAI);
     }
 
-
-
-
-    }
+}

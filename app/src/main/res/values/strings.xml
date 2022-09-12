@@ -10,5 +10,6 @@
     <string name="display_result">Le titre était : %1$s</string>
     <string name="bravo">Bravo !</string>
     <string name="perdu">Perdu !</string>
+    <string name="reecouter">Réécouter</string>
 
 </resources>

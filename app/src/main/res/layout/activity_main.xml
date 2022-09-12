@@ -12,6 +12,7 @@
         android:id="@+id/buttonPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/commencer"
         android:layout_gravity="center" />
 
     <AutoCompleteTextView
@@ -25,6 +26,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/soumettre"
+        android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/buttonChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/changer"
         android:layout_gravity="center" />
 
     <TextView android:id="@+id/texteTitre"
