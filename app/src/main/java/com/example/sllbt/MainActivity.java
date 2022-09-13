@@ -1,10 +1,12 @@
 package com.example.sllbt;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
 
         // Le CSV sous forme de liste de chansons
         listeChansons = csvToList(R.raw.songs, ";");
