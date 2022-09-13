@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/Theme.SLLBT"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <Button
         android:id="@+id/buttonPlay"
