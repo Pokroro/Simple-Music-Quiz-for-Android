@@ -6,29 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/Theme.SLLBT"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/buttonPause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pause"
-        android:layout_gravity="center" />
+    tools:context=".ui.MainActivity">
 
     <Button
         android:id="@+id/buttonPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/play"
-        android:layout_gravity="center"/>
+        android:text="@string/commencer"
+        android:layout_gravity="center" />
 
     <AutoCompleteTextView
         android:id="@+id/autocompleteReponse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/votre_reponse"
-
-        />
+        android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/buttonSubmit"
@@ -37,21 +29,23 @@
         android:text="@string/soumettre"
         android:layout_gravity="center" />
 
-    <TextView android:id="@+id/texteTitre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
-    <TextView android:id="@+id/texteResultat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
-
     <Button
         android:id="@+id/buttonChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/changer"
+        android:layout_gravity="center" />
+
+    <TextView android:id="@+id/texteTitre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/texteResultat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
         android:layout_gravity="center" />
 
 </LinearLayout>
