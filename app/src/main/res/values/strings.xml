@@ -7,9 +7,12 @@
     <string name="play">Play</string>
     <string name="soumettre">Soumettre</string>
     <string name="votre_reponse">Votre réponse</string>
-    <string name="display_result">Le titre était : %1$s</string>
+    <string name="display_result">Le titre était : &lt;b>&lt;i>%1$s&lt;/i>&lt;/b></string>
     <string name="bravo">Bravo !</string>
     <string name="perdu">Perdu !</string>
     <string name="reecouter">Réécouter</string>
+    <string name="connexion_impossible">Connexion impossible</string>
+    <string name="parametres">Paramètres</string>
+    <string name="annuler">Annuler</string>
 
 </resources>

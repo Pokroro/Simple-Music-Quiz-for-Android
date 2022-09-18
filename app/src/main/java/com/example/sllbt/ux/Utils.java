@@ -36,7 +36,13 @@ public class Utils {
         try {
             // On essaie de ping Google
             Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            return (ipProcess.waitFor() == 0);
+            boolean temp = (ipProcess.waitFor() == 0);
+            if (temp) {
+                Log.d(TAG_SNIPPETS, "Accès Internet : OK");
+            } else {
+                Log.e(TAG_SNIPPETS, "Accès Internet : NON");
+            }
+            return temp;
         } catch (Exception e) {
             Log.e(TAG_SNIPPETS, "Erreur dans isOnline");
             return false;

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 
 import com.example.sllbt.R;
 import com.example.sllbt.ux.CsvManager;
@@ -26,17 +27,19 @@ public class MainActivity extends AppCompatActivity {
     // Perhaps using 2 concurrents mediaPlayer
     // Also try not to store data (Songs list) in this Activity
 
-    // TODO : check Internet with short-lived text only seen if no Internet
-    // Check Internet for each function that needs it
+    // TODO : Make an asynchronous Internet Check
 
     private final static String TAG_MAIN = "debug_main";
 
-    private final static int DELAI = 2000; // Ne sera plus constant dans les versions ultérieures
+    private final static int DELAI = 2000; // Ne sera plus constant dans les versions futures
 
     private final static Utils tool = new Utils();
 
+    private int flag=0; // Vérifie si le jeu a déjà commencé ou non
+
     private ArrayList<Song> listeChansons;
     private Button bPlay;
+    private Button bChange;
     private AutoCompleteTextView twReponse;
     private TextView tTitre;
     private TextView tResultat;
@@ -49,13 +52,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-
-        while (!tool.isOnline()) {
-            Log.d(TAG_MAIN,"pas d'accès Internet");
-        }
-        Log.d(TAG_MAIN,"connexion internet établie");
-
         // Le CSV sous forme de liste de chansons
         CsvManager csvManager = new CsvManager(getResources());
         listeChansons = csvManager.csvToList(R.raw.songs, ";");
@@ -67,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
         bPlay.setOnClickListener(this::playGame);
         Button bSubmit = findViewById(R.id.buttonSubmit);
         bSubmit.setOnClickListener(this::verifResultat);
-        Button bChange = findViewById(R.id.buttonChange);
+        bChange = findViewById(R.id.buttonChange);
         bChange.setOnClickListener(this::changeSong);
+        bChange.setVisibility(View.INVISIBLE);
         Log.d(TAG_MAIN,"Boutons créés");
 
         // Création du formulaire de réponse
@@ -85,23 +82,24 @@ public class MainActivity extends AppCompatActivity {
         tResultat = findViewById(R.id.texteResultat);
         Log.d(TAG_MAIN,"TextView créées");
 
-
         // Création du lecteur de médias
         mediaPlayer = new SongManager(listeChansons.get(tool.genAleatoire(listeChansons.size()-1)));
         // On veut lire des fichiers audios
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         Log.d(TAG_MAIN, "MediaPlayer configuré");
 
-
-        mediaPlayer.insertSong();
-
     }
     
     // Fonction du bouton principal
     private void playGame(View v) {
-        mediaPlayer.seekTo(0);
-        bPlay.setText(getString(R.string.reecouter));
-        mediaPlayer.musicPlayDelay(DELAI);
+        if (tool.isOnline()) {
+            if (NotLancementCheck(v)) {
+                mediaPlayer.seekTo(0);
+                mediaPlayer.musicPlayDelay(DELAI);
+            }
+        } else {
+            openInternetDialog();
+        }
     }
 
     // Met à jour l'UI selon que l'utilisateur gagne ou perde
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         String reponse = twReponse.getText().toString();
         Log.d(TAG_MAIN,"Réponse entrée : '" + reponse + "'");
         if (!reponse.equals("")) {
-            tTitre.setText(getString(R.string.display_result, mediaPlayer.getChanson().getTitle()));
+            tTitre.setText(HtmlCompat.fromHtml(getString(R.string.display_result, mediaPlayer.getChanson().getTitle()), HtmlCompat.FROM_HTML_MODE_COMPACT));
             if (reponse.equalsIgnoreCase(mediaPlayer.getChanson().getTitle())) {
                 Log.d(TAG_MAIN, "Victoire !");
                 tResultat.setText(getString(R.string.bravo));
@@ -127,20 +125,49 @@ public class MainActivity extends AppCompatActivity {
 
     // Change la chanson "insérée" dans le lecteur
     private void changeSong(View v) {
+        tool.fermerClavier(this);
         mediaPlayer.musicStop();
-        bPlay.setText(getString(R.string.reecouter));
+        UIclean();
+
+        if (tool.isOnline()) {
+            mediaPlayer.reset();
+            int temp = tool.genAleatoire(listeChansons.size() - 1);
+            while (temp == mediaPlayer.getChanson().getIndice()) {
+                temp = tool.genAleatoire(listeChansons.size() - 1);
+            }
+            mediaPlayer.setChanson(listeChansons.get(temp));
+            mediaPlayer.insertSong();
+            Log.d(TAG_MAIN, "Changement de chanson");
+
+            mediaPlayer.musicPlayDelay(DELAI);
+
+        } else {
+            openInternetDialog();
+        }
+    }
+
+    private boolean NotLancementCheck(View v) {
+        if (flag == 0) {
+            flag = 1;
+            changeSong(v);
+            bPlay.setText(getString(R.string.reecouter));
+            bChange.setVisibility(View.VISIBLE);
+            Log.d(TAG_MAIN,"Lancement du jeu");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void openInternetDialog() {
+        final InternetDialog dialog = new InternetDialog(this);
+        dialog.show();
+    }
+
+    private void UIclean() {
         twReponse.setText("");
         tTitre.setText("");
         tResultat.setText("");
-        mediaPlayer.reset();
-        int temp = tool.genAleatoire(listeChansons.size()-1);
-        while (temp == mediaPlayer.getChanson().getIndice()) {
-            temp = tool.genAleatoire(listeChansons.size()-1);
-        }
-        mediaPlayer.setChanson(listeChansons.get(temp));
-        mediaPlayer.insertSong();
-        Log.d(TAG_MAIN,"Changement de chanson");
-        mediaPlayer.musicPlayDelay(DELAI);
     }
 
 }
